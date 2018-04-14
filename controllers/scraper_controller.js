@@ -45,38 +45,40 @@ router.post("/scrape", function(req, res) {
     //first grab the body of the html with request
     request("http:www.nytimes.com/", function(error, response, html) {
         //Then, we load that into cheerio and save it to $ for a shorhand selector
-        var $ = cheerio.load(html);
+        if (error) {
+          console.log(error);
+        } else {
+              
+          var $ = cheerio.load(html);
 
-        //Make empty array for temporarily saving and showing scraped articles.
-        var scrapedArticles = {};
+          //Make empty array for temporarily saving and showing scraped articles.
+          var scrapedArticles = {};
 
-        //Now, we grab every h2 in an article tag, and do the following:
-        $("article h2").each(function(i, element) {
+          //Now, we grab every h2 in an article tag, and do the following:
+          $("article h2").each(function(i, element) {
 
-            //save an empty result object
-            var result = {};
+              //save an empty result object
+              var result = {};
 
-            //add the text and href of the link, and save them as properties of the result object
-            result.title = $(this).children("a").attr("href");
+              //add the text and href of the link, and save them as properties of the result object
+              result.title = $(this).children("a").attr("href");
 
-            console.log("What's the result title ?" + result.title);
+              console.log("What's the result title ?" + result.title);
 
-            result.link = $(this).children("a").attr("href");
+              result.link = $(this).children("a").attr("href");
 
-            scrapedArticles[i] = result;
+              scrapedArticles[i] = result;
 
-        });
+          });
 
-        console.log("Scraped Articles object built nicely: " + scrapedArticles);
+          console.log("Scraped Articles object built nicely: " + scrapedArticles);
 
-        var hbsArticleObject = {
-            articles: scrapedArticles
-        };
+          var hbsArticleObject = {
+              articles: scrapedArticles
+          };
 
-        res.render("index", hbsArticleObject) {
-
-            console.log
-        }
+          res.render("index", hbsArticleObject)
+      }
     });
 });
 
